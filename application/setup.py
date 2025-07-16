@@ -78,7 +78,7 @@ setup(
         'License :: OSI Approved :: Apache Software License',
         'Natural Language :: English',
         'Programming Language :: Python :: 3',
-        'Programming Language :: Python :: 3.12',
+        'Programming Language :: Python :: 3.11',
     ],
 
     entry_points={
