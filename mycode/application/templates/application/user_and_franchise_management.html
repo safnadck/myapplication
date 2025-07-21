@@ -23,18 +23,6 @@
             color: red;
             font-size: 0.9em;
         }
-        .view-students-btn {
-            background-color: #4CAF50;
-            color: white;
-            padding: 5px 10px;
-            border: none;
-            border-radius: 4px;
-            cursor: pointer;
-            text-decoration: none;
-        }
-        .view-students-btn:hover {
-            background-color: #45a049;
-        }
     </style>
 </head>
 <body>
@@ -47,7 +35,6 @@
             <th>Full Name</th>
             <th>Email</th>
             <th>Franchise</th>
-            <th>Actions</th>
         </tr>
         {% for user in users %}
         <tr>
@@ -56,18 +43,10 @@
             <td>{{ user.first_name }}</td>
             <td>{{ user.email }}</td>
             <td>{{ user.franchises }}</td>
-            <td>
-                {% if user.franchise_id %}
-                <a href="{% url 'application:franchise_students' user.franchise_id %}" class="view-students-btn">
-                    View Students
-                </a>
-                {% endif %}
-            </td>
         </tr>
         {% endfor %}
     </table>
 
-    <!-- Rest of your existing template remains the same -->
     <h2>Register New User</h2>
     <form method="post">
         {% csrf_token %}
@@ -84,7 +63,6 @@
             <th>Name</th>
             <th>Location</th>
             <th>Joining Date</th>
-            <th>Actions</th>
         </tr>
         {% for franchise in franchises %}
         <tr>
@@ -92,11 +70,6 @@
             <td>{{ franchise.name }}</td>
             <td>{{ franchise.location }}</td>
             <td>{{ franchise.joining_date }}</td>
-            <td>
-                <a href="{% url 'application:franchise_students' franchise.id %}" class="view-students-btn">
-                    View Students
-                </a>
-            </td>
         </tr>
         {% endfor %}
     </table>

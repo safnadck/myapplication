@@ -1,0 +1,57 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="container mt-4">
+    <h1>Admin Panel</h1>
+    
+    <div class="row mb-4">
+        <div class="col-md-4">
+            <div class="card text-white bg-primary">
+                <div class="card-body">
+                    <h5 class="card-title">Total Courses</h5>
+                    <p class="card-text display-4">{{ total_courses }}</p>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="card text-white bg-success">
+                <div class="card-body">
+                    <h5 class="card-title">Total Students</h5>
+                    <p class="card-text display-4">{{ total_students }}</p>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="card text-white bg-info">
+                <div class="card-body">
+                    <h5 class="card-title">Total Franchises</h5>
+                    <p class="card-text display-4">{{ total_franchises }}</p>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <div class="row">
+        <div class="col-md-3 mb-3">
+            <a href="{% url 'admin:application_franchise_changelist' %}" class="btn btn-primary btn-block btn-lg">
+                Franchise Management
+            </a>
+        </div>
+        <div class="col-md-3 mb-3">
+            <a href="{% url 'admin:application_feedetails_changelist' %}" class="btn btn-warning btn-block btn-lg">
+                Fee Details
+            </a>
+        </div>
+        <div class="col-md-3 mb-3">
+            <a href="{% url 'admin:application_studentdetails_changelist' %}" class="btn btn-success btn-block btn-lg">
+                Student Details
+            </a>
+        </div>
+        <div class="col-md-3 mb-3">
+            <a href="{% url 'admin:index' %}" class="btn btn-secondary btn-block btn-lg">
+                Full Admin
+            </a>
+        </div>
+    </div>
+</div>
+{% endblock %}

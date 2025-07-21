@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Students of {{ franchise.name }}</title>
+</head>
+<body>
+    <h2>Students under {{ franchise.name }}</h2>
+    <table border="1">
+        <tr>
+            <th>Username</th>
+            <th>Phone Number</th>
+            <th>Address</th>
+            <th>Action</th>
+        </tr>
+        {% for user in users %}
+        <tr>
+            <td>{{ user.user.username }}</td>
+            <td>{{ user.phone_number }}</td>
+            <td>{{ user.address }}</td>
+            <td><a href="{% url 'application:student_fee_details' user.user_franchise_id %}">View/Edit Fee Details</a></td>
+
+        </tr>
+        {% endfor %}
+    </table>
+
+    <h3>Register New Student for {{ franchise.name }}</h3>
+<form method="post">
+    {% csrf_token %}
+    {{ form.as_p }}
+    <button type="submit">Register Student</button>
+</form>
+
+
+    <p><a href="{% url 'application:franchise_list' %}">Back to Franchise List</a></p>
+</body>
+</html>

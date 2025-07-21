@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Franchise List</title>
+</head>
+<body>
+    <h2>Franchises</h2>
+    <table border="1">
+        <tr>
+            <th>ID</th>
+            <th>Name</th>
+            <th>Location</th>
+            <th>Joining Date</th>
+            <th>Action</th>
+        </tr>
+        {% for franchise in franchises %}
+        <tr>
+            <td>{{ franchise.id }}</td>
+            <td>{{ franchise.name }}</td>
+            <td>{{ franchise.location }}</td>
+            <td>{{ franchise.joining_date }}</td>
+            <td><a href="{% url 'application:franchise_students' franchise.id %}">View Students</a></td>
+        </tr>
+        {% endfor %}
+    </table>
+
+    <h3>Register New Franchise</h3>
+<form method="post">
+    {% csrf_token %}
+    {{ form.as_p }}
+    <button type="submit">Register Franchise</button>
+</form>
+
+</body>
+</html>

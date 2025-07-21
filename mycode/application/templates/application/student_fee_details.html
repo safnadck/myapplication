@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Fee Details for {{ user_franchise.user.username }}</title>
+</head>
+<body>
+    <h2>Fee Details - {{ user_franchise.user.username }}</h2>
+
+    {% if fee_details %}
+        <p>Total Fees: {{ fee_details.total_fees }}</p>
+        <p>Total Installments: {{ fee_details.total_installments }}</p>
+        <p>Paid Installments: {{ fee_details.paid_installments }}</p>
+        <p>Remaining Fees: {{ fee_details.remaining_fees }}</p>
+    {% else %}
+        <p>No fee details added yet.</p>
+    {% endif %}
+
+    <form method="post">
+        {% csrf_token %}
+        {{ form.as_p }}
+        <button type="submit">Save Fee Details</button>
+    </form>
+
+    <p><a href="{% url 'application:franchise_students' user_franchise.franchise.id %}">Back to Student List</a></p>
+</body>
+</html>

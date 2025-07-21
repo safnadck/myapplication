@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Students in {{ franchise.name }}</title>
+    <style>
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 20px;
+        }
+        th, td {
+            border: 1px solid #ddd;
+            padding: 8px;
+            text-align: left;
+        }
+        th {
+            background-color: #f2f2f2;
+        }
+        .back-btn {
+            background-color: #2196F3;
+            color: white;
+            padding: 8px 16px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            text-decoration: none;
+            margin-bottom: 20px;
+            display: inline-block;
+        }
+        .back-btn:hover {
+            background-color: #0b7dda;
+        }
+    </style>
+</head>
+<body>
+<h1>Students in {{ franchise.name }} ({{ franchise.location }})</h1>
+
+<a href="{% url 'application:user_and_franchise_management' %}" class="back-btn">Back to Management</a>
+
+<table>
+    <tr>
+        <th>ID</th>
+        <th>Username</th>
+        <th>Full Name</th>
+        <th>Email</th>
+        <th>Phone Number</th>
+        <th>Address</th>
+        <th>Duration</th>
+        <th>Last Login</th>
+        <th>Pending Fees</th>
+        <th>Enrolled Courses</th>
+        <th>Actions</th>
+    </tr>
+    {% for student in students %}
+    <tr>
+        <td>{{ student.id }}</td>
+        <td>{{ student.username }}</td>
+        <td>{{ student.full_name }}</td>
+        <td>{{ student.email }}</td>
+        <td>{{ student.phone_number|default:"-" }}</td>
+        <td>{{ student.address|default:"-" }}</td>
+        <td>{{ student.duration|default:"-" }}</td>
+        <td>{% if student.last_login %}{{ student.last_login|date:"Y-m-d H:i:s" }}{% else %}-{% endif %}</td>
+        <td>
+            <a href="{% url 'application:manage_fee_details' student.user_franchise_id %}">{{ student.pending_fees|floatformat:2 }}</a>
+        </td>
+        <td>
+            {% if student.enrolled_courses %}
+                <ul>
+                {% for course in student.enrolled_courses %}
+                    <li>{{ course }}</li>
+                {% endfor %}
+                </ul>
+            {% else %}
+                -
+            {% endif %}
+        </td>
+        <td>
+            <a href="{% url 'application:edit_student_details' student.user_franchise_id %}" class="view-students-btn">Edit Details</a>
+        </td>
+    </tr>
+    {% empty %}
+    <tr>
+        <td colspan="11">No students found in this franchise.</td>
+    </tr>
+    {% endfor %}
+</table>
+
+
+
+  <h2>Register New User</h2>
+    <form method="post">
+        {% csrf_token %}
+        {{ user_form.as_p }}
+        <button type="submit" name="user_form_submit">Register User</button>
+    </form>
+</body>
+</html>
