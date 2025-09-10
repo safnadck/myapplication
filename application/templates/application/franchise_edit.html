@@ -1,0 +1,152 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Edit Franchise - {{ franchise.name }}</title>
+    <link rel="stylesheet" href="{% static 'css/franchise_edit.css' %}">
+    <script src="https://code.iconify.design/3/3.1.0/iconify.min.js"></script>
+</head>
+
+<body>
+
+    <!-- Navbar -->
+    <header class="navbar">
+        <a href="{% url 'application:homepage' %}" class="navbar-left">
+            <img src="{% static 'images/tutorlogo.png' %}" alt="Tutor Logo" class="brand-logo">
+        </a>
+
+        <div class="user-panel">
+            <span class="iconify profile" data-icon="iconamoon:profile-fill"></span>
+            <span class="user-name">{{ user.username }}</span>
+            <div class="dropdown-menu">
+                <a href="{% url 'logout' %}" class="logout-link">Logout</a>
+            </div>
+        </div>
+    </header>
+
+    <!-- Sidebar -->
+    <aside class="sidebar-menu">
+        <div class="menu-wrapper">
+
+        </div>
+        <div class="menu-item">
+            <a href="{% url 'application:franchise_list' %}" class="menu-link">
+                <span class="iconify menu-icon" data-icon="fa-solid:school"></span>
+                <span class="menu-text">Franchise</span>
+            </a>
+        </div>\
+        <div class="menu-item">
+        <a href="" class="menu-link">
+          <span class="iconify menu-icon" data-icon="ic:sharp-library-books"></span>
+          <span class="menu-text">Courses</span>
+        </a>
+      </div>
+        <div class="menu-item">
+            <a href="{% url 'application:homepage' %}" class="menu-link">
+                <span class="iconify menu-icon" data-icon="iconoir:reports-solid"></span>
+                <span class="menu-text">Reports</span>
+            </a>
+        </div>
+        <div class="menu-item">
+            <a href="#" class="menu-link">
+                <span class="iconify menu-icon" data-icon="mdi:cog"></span>
+                <span class="menu-text">Settings</span>
+            </a>
+        </div>
+        </div>
+    </aside>
+
+    <!-- Main Content -->
+    <main class="page-content">
+        <div class="register-wrapper">
+            <div class="left-buttons">
+                <a href="{% url 'application:franchise_list' %}" class="backbutton">
+                    <span class="iconify" data-icon="weui:back-filled" style="font-size: 20px;"></span>
+                </a>
+            </div>
+        </div>
+        <div class="form-card">
+            <h1 class="heading" style="font-size: 32px;">Edit Franchise Details</h1>
+            <p class="subtitle">Update information for: <strong>{{ franchise.name }}</strong></p>
+
+            <form method="post">
+                {% csrf_token %}
+
+                <div class="form-group">
+                    {{ form.name.label_tag }}
+                    {{ form.name }}
+                    {% if form.name.errors %}
+                    <div class="error">{{ form.name.errors }}</div>
+                    {% endif %}
+                </div>
+
+                <div class="form-group">
+                    {{ form.coordinator.label_tag }}
+                    {{ form.coordinator }}
+                    {% if form.coordinator.errors %}
+                    <div class="error">{{ form.coordinator.errors }}</div>
+                    {% endif %}
+                </div>
+
+                <div class="form-group">
+                    {{ form.contact_no.label_tag }}
+                    {{ form.contact_no }}
+                    {% if form.contact_no.errors %}
+                    <div class="error">{{ form.contact_no.errors }}</div>
+                    {% endif %}
+                </div>
+
+                <div class="form-group">
+                    {{ form.email.label_tag }}
+                    {{ form.email }}
+                    {% if form.email.errors %}
+                    <div class="error">{{ form.email.errors }}</div>
+                    {% endif %}
+                </div>
+
+                <div class="form-group">
+                    {{ form.location.label_tag }}
+                    {{ form.location }}
+                    {% if form.location.errors %}
+                    <div class="error">{{ form.location.errors }}</div>
+                    {% endif %}
+                </div>
+
+                <div class="form-group">
+                    {{ form.registration_date.label_tag }}
+                    {{ form.registration_date }}
+                    {% if form.registration_date.errors %}
+                    <div class="error">{{ form.registration_date.errors }}</div>
+                    {% endif %}
+                </div>
+
+                <div class="form-actions">
+                    <button type="submit">Update Franchise</button>
+                    <a href="{% url 'application:franchise_list' %}" class="btn btn-secondary">Cancel</a>
+                </div>
+            </form>
+
+        </div>
+    </main>
+<script>
+  const userPanel = document.querySelector('.user-panel');
+  const dropdownMenu = document.querySelector('.dropdown-menu');
+
+  // Toggle dropdown on click
+  userPanel.addEventListener('click', function(event) {
+    event.stopPropagation(); // prevent click from bubbling
+    dropdownMenu.style.display = dropdownMenu.style.display === 'block' ? 'none' : 'block';
+  });
+
+  // Close dropdown when clicking outside
+  document.addEventListener('click', function() {
+    dropdownMenu.style.display = 'none';
+  });
+</script>
+
+</body>
+
+</html>

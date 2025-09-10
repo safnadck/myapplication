@@ -1,0 +1,179 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Edit Franchise - {{ franchise.name }}</title>
+    <link rel="stylesheet" href="{% static 'css/student_fee_management.css' %}">
+    <script src="https://code.iconify.design/3/3.1.0/iconify.min.js"></script>
+</head>
+
+<body>
+
+    <!-- Navbar -->
+    <header class="navbar">
+        <a href="{% url 'application:homepage' %}" class="navbar-left">
+            <img src="{% static 'images/tutorlogo.png' %}" alt="Tutor Logo" class="brand-logo">
+        </a>
+
+        <div class="user-panel">
+            <span class="iconify profile" data-icon="iconamoon:profile-fill"></span>
+            <span class="user-name">{{ user.username }}</span>
+            <div class="dropdown-menu">
+                <a href="{% url 'logout' %}" class="logout-link">Logout</a>
+            </div>
+        </div>
+    </header>
+
+    <!-- Sidebar -->
+    <aside class="sidebar-menu">
+        <div class="menu-wrapper">
+
+        </div>
+        <div class="menu-item">
+            <a href="{% url 'application:franchise_list' %}" class="menu-link">
+                <span class="iconify menu-icon" data-icon="fa-solid:school"></span>
+                <span class="menu-text">Franchise</span>
+            </a>
+        </div>
+        <div class="menu-item">
+        <a href="" class="menu-link">
+          <span class="iconify menu-icon" data-icon="ic:sharp-library-books"></span>
+          <span class="menu-text">Courses</span>
+        </a>
+      </div>
+        <div class="menu-item">
+            <a href="{% url 'application:homepage' %}" class="menu-link">
+                <span class="iconify menu-icon" data-icon="iconoir:reports-solid"></span>
+                <span class="menu-text">Reports</span>
+            </a>
+        </div>
+        <div class="menu-item">
+            <a href="#" class="menu-link">
+                <span class="iconify menu-icon" data-icon="mdi:cog"></span>
+                <span class="menu-text">Settings</span>
+            </a>
+        </div>
+        </div>
+    </aside>
+
+    <!-- Main Content -->
+    <main class="page-content">
+        <div class="register-wrapper">
+            <div class="left-buttons">
+                <a href="{% url 'application:student_detail' franchise.id batch.id user.id %}" class="backbutton">
+                    <span class="iconify" data-icon="weui:back-filled" style="font-size: 20px;"></span>
+                </a>
+            </div>
+        </div>
+
+        <h2>Fee Management for {{ user.username }} in Batch {{ batch.batch_no }}</h2>
+<p>Batch Fee Management Discount: {{ fee_management.discount }}</p>
+<p>Remaining Amount: ${{ fee_management.remaining_amount }}</p>
+
+<form method="post" id="fee-management-form">
+  {% csrf_token %}
+  <table class="fee-table" id="installments-table">
+    <thead>
+      <tr>
+        <th>Installment Due Date</th>
+        <th>Amount</th>
+        <th>Amount Paid</th>
+        <th>Repayment Days</th>
+        <th>Status</th>
+        <th>Payment Date</th>
+        
+      </tr>
+    </thead>
+    <tbody id="installments-tbody">
+      {% for item in installments %}
+        {% with installment=item.installment %}
+        <tr class="installment-row">
+          <td>{{ installment.due_date|date:'Y-m-d' }}</td>
+          <td>{{ installment.amount }}</td>
+          <td class="amount-paid">
+            {% if installment.status == "paid" %}
+              {{ installment.amount }}
+            {% else %}
+              0.00
+            {% endif %}
+          </td>
+          <td>{{ item.repayment_period_days }}</td>
+          <td>
+            <select name="status_{{ installment.id }}" class="status-select">
+              <option value="pending" {% if installment.status == "pending" %}selected{% endif %}>Pending</option>
+              <option value="paid" {% if installment.status == "paid" %}selected{% endif %}>Paid</option>
+              <option value="overdue" {% if installment.status == "overdue" %}selected{% endif %}>Overdue</option>
+            </select>
+          </td>
+          <td>{{ installment.payment_date|default:"-" }}</td>
+         
+        </tr>
+        {% endwith %}
+      {% endfor %}
+    </tbody>
+  </table>
+
+
+
+  <div class="fee-summary">
+    <h3>Fee Summary</h3>
+    <p><strong>Total Paid:</strong> $<span id="total-paid">{{ total_paid }}</span></p>
+    <p><strong>Total Pending:</strong> $<span id="total-pending">{{ total_pending }}</span></p>
+  </div>
+
+  <button type="submit" class="update-btn">Update</button>
+
+
+</form>
+
+
+    </main>
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const tbody = document.getElementById('installments-tbody');
+    const totalPaidSpan = document.getElementById('total-paid');
+    const totalPendingSpan = document.getElementById('total-pending');
+
+    // Function to update totals based on status changes
+    function updateTotals() {
+        let totalPaid = 0;
+        let totalPending = 0;
+
+        const rows = tbody.querySelectorAll('.installment-row');
+        rows.forEach(row => {
+            const amountCell = row.querySelector('td:nth-child(2)'); // Amount column
+            const statusSelect = row.querySelector('.status-select');
+            const amountPaidCell = row.querySelector('.amount-paid');
+
+            const amount = parseFloat(amountCell.textContent) || 0;
+            const status = statusSelect.value;
+
+            if (status === 'paid') {
+                totalPaid += amount;
+                amountPaidCell.textContent = amount.toFixed(2);
+            } else {
+                totalPending += amount;
+                amountPaidCell.textContent = '0.00';
+            }
+        });
+
+        totalPaidSpan.textContent = totalPaid.toFixed(2);
+        totalPendingSpan.textContent = totalPending.toFixed(2);
+    }
+
+    // Add event listeners to status selects
+    const statusSelects = tbody.querySelectorAll('.status-select');
+    statusSelects.forEach(select => {
+        select.addEventListener('change', updateTotals);
+    });
+
+    // Initial update
+    updateTotals();
+});
+</script>
+
+</body>
+</html>

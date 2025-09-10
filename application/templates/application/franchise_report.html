@@ -1,0 +1,167 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Home Page</title>
+  <link rel="stylesheet" href="{% static 'css/franchise_report.css' %}">
+  <script src="https://code.iconify.design/3/3.1.0/iconify.min.js"></script>
+  </style>
+</head>
+<body>
+
+
+  <header class="navbar">
+    <a href="{% url 'application:homepage' %}" class="navbar-left">
+      <img src="{% static 'images/tutorlogo.png' %}" alt="Tutor Logo" class="brand-logo">
+    </a>
+
+    
+   <div class="user-panel">
+  <span class="iconify profile" data-icon="iconamoon:profile-fill"></span>
+  <span class="user-name">{{ user.username }}</span>
+
+
+  <div class="dropdown-menu">
+    <a href="{% url 'logout' %}" class="logout-link">Logout</a>
+  </div>
+</div>
+ 
+    
+  </header>
+
+  <aside class="sidebar-menu">
+    <div class="menu-wrapper">
+      <div class="menu-item">
+        <a href="{% url 'application:franchise_list' %}" class="menu-link">
+          <span class="iconify menu-icon" data-icon="fa-solid:school"></span>
+          <span class="menu-text">Franchise</span>
+        </a>
+      </div>
+      <div class="menu-item">
+        <a href="" class="menu-link">
+          <span class="iconify menu-icon" data-icon="ic:sharp-library-books"></span>
+          <span class="menu-text">Courses</span>
+        </a>
+      </div>
+      <div class="menu-item">
+        <a href="{% url 'application:homepage' %}" class="menu-link">
+          <span class="iconify menu-icon" data-icon="iconoir:reports-solid"></span>
+          <span class="menu-text">Reports</span>
+        </a>
+      </div>
+      <div class="menu-item">
+        <a href="#" class="menu-link">
+          <span class="iconify menu-icon" data-icon="mdi:cog"></span>
+          <span class="menu-text">Settings</span>
+        </a>
+      </div>
+    </div>
+  </aside>
+
+
+  <main class="page-content">
+
+     <div class="register-wrapper">
+      <div class="left-buttons">
+        <a href="{% url 'application:franchise_list' %}" class="backbutton">
+          <span class="iconify" data-icon="weui:back-filled" style="font-size: 20px;"></span>
+        </a>
+      </div>
+      
+
+      <div class="right-buttons">
+
+        <a href="{% url 'application:batch_create' franchise.pk %}" class="register-button">
+          <span class="iconify plus-icon" data-icon="vaadin:plus"></span>
+          Add batch
+        </a>
+      </div>
+    </div>
+
+    <!-- Franchise Details Section -->
+    <div class="franchise-details-section">
+      <h2 class="franchise-title">{{ franchise.name }}</h2>
+      <div class="franchise-details-grid">
+        <div class="detail-item">
+          <span class="detail-label">Coordinator:</span>
+          <span class="detail-value">{{ franchise.coordinator }}</span>
+        </div>
+        <div class="detail-item">
+          <span class="detail-label">Contact:</span>
+          <span class="detail-value">{{ franchise.contact_no }}</span>
+        </div>
+        <div class="detail-item">
+          <span class="detail-label">Email:</span>
+          <span class="detail-value">{{ franchise.email }}</span>
+        </div>
+        {% if franchise.location %}
+        <div class="detail-item">
+          <span class="detail-label">Location:</span>
+          <span class="detail-value">{{ franchise.location }}</span>
+        </div>
+        {% endif %}
+        {% if franchise.registration_date %}
+        <div class="detail-item">
+          <span class="detail-label">Registration Date:</span>
+          <span class="detail-value">{{ franchise.registration_date }}</span>
+        </div>
+        {% endif %}
+      </div>
+    </div>
+
+    <!-- Batches Section -->
+    <div class="table-wrapper">
+      {% if batches %}
+      <table class="data-table">
+<thead>
+          <tr>
+            <th>Batch Number</th>
+            <th>Course</th>
+            <th>Fees</th>
+            <th>actions</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for batch in batches %}
+          <tr>
+            <td>{{ batch.batch_no }}</td>
+            <td>{{ batch.course.display_name|default:batch.course.id }}</td>
+            <td>{{ batch.fees }}</td>
+            <td>
+                <a href="{% url 'application:batch_students' franchise.pk batch.pk %}" class="btnview">
+            View
+          </a>
+                <!-- <a href="{% url 'application:batch_fee_management' franchise.pk batch.pk %}" class="btnview">
+            Fee Management
+          </a> -->
+            </td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+      {% else %}
+      <p>No batches registered yet.</p>
+      {% endif %}
+    </div>
+
+  </main>
+<script>
+  const userPanel = document.querySelector('.user-panel');
+  const dropdownMenu = document.querySelector('.dropdown-menu');
+
+  // Toggle dropdown on click
+  userPanel.addEventListener('click', function(event) {
+    event.stopPropagation(); // prevent click from bubbling
+    dropdownMenu.style.display = dropdownMenu.style.display === 'block' ? 'none' : 'block';
+  });
+
+  // Close dropdown when clicking outside
+  document.addEventListener('click', function() {
+    dropdownMenu.style.display = 'none';
+  });
+</script>
+
+</body>
+</html>

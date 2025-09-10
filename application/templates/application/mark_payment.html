@@ -1,0 +1,10 @@
+
+
+<h2>Mark Payment Received for Installment {{ installment.id }}</h2>
+<form method="post">
+  {% csrf_token %}
+  {{ form.as_p }}
+  <button type="submit">Mark Paid</button>
+</form>
+<a href="{% url 'application:student_fee_management' franchise.pk batch.pk user.pk %}">Back</a>
+

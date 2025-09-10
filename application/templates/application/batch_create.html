@@ -1,0 +1,103 @@
+{% load static %}
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Register Franchise</title>
+    <link rel="stylesheet" href="{% static 'css/batch_create.css' %}">
+    <script src="https://code.iconify.design/3/3.1.0/iconify.min.js"></script>
+</head>
+<body>
+
+     <header class="navbar">
+    <a href="{% url 'application:homepage' %}" class="navbar-left">
+      <img src="{% static 'images/tutorlogo.png' %}" alt="Tutor Logo" class="brand-logo">
+    </a>
+
+   <div class="user-panel">
+  <span class="iconify profile" data-icon="iconamoon:profile-fill"></span>
+  <span class="user-name">{{ user.username }}</span>
+
+ 
+  <div class="dropdown-menu">
+    <a href="{% url 'logout' %}" class="logout-link">Logout</a>
+  </div>
+</div>
+ 
+    
+  </header>
+
+
+    <aside class="sidebar-menu">
+    <div class="menu-wrapper">
+      <div class="menu-item">
+        <a href="{% url 'application:franchise_list' %}" class="menu-link">
+          <span class="iconify menu-icon" data-icon="fa-solid:school"></span>
+          <span class="menu-text">Franchise</span>
+        </a>
+      </div>
+      <div class="menu-item">
+        <a href="" class="menu-link">
+          <span class="iconify menu-icon" data-icon="ic:sharp-library-books"></span>
+          <span class="menu-text">Courses</span>
+        </a>
+      </div>
+      <div class="menu-item">
+        <a href="{% url 'application:homepage' %}" class="menu-link">
+          <span class="iconify menu-icon" data-icon="iconoir:reports-solid"></span>
+          <span class="menu-text">Reports</span>
+        </a>
+      </div>
+      <div class="menu-item">
+        <a href="#" class="menu-link">
+          <span class="iconify menu-icon" data-icon="mdi:cog"></span>
+          <span class="menu-text">Settings</span>
+        </a>
+      </div>
+    </div>
+  </aside>
+
+ <main class="page-content">
+  <div class="register-wrapper">
+   <div class="left-buttons">
+        <a href="{% url 'application:franchise_report' franchise.id %}" class="backbutton">
+          <span class="iconify" data-icon="weui:back-filled" style="font-size: 20px;"></span>
+        </a>
+      </div>
+  </div>
+
+  <div class="form-card">
+    <h1 class="heading">Create Batch for Franchise: {{ franchise.name }}</h1>
+    <form method="post">
+      {% csrf_token %}
+      <input type="text" name="batch_no" placeholder="Batch Number" value="{{ form.batch_no.value|default_if_none:'' }}" />
+      <input type="number" name="fees" placeholder="Fees" value="{% if form.fees.value == 0 %}{% else %}{{ form.fees.value }}{% endif %}" />
+      <select name="course">
+        <option value="">Select Course</option>
+        {% for course in form.fields.course.queryset %}
+          <option value="{{ course.id }}" {% if course.id|stringformat:"s" == form.course.value|stringformat:"s" %}selected{% endif %}>{{ course.display_name }}</option>
+        {% endfor %}
+      </select>
+      <button type="submit">Create Batch</button>
+    </form>
+  </div>
+</main>
+<script>
+  const userPanel = document.querySelector('.user-panel');
+  const dropdownMenu = document.querySelector('.dropdown-menu');
+
+  // Toggle dropdown on click
+  userPanel.addEventListener('click', function(event) {
+    event.stopPropagation(); // prevent click from bubbling
+    dropdownMenu.style.display = dropdownMenu.style.display === 'block' ? 'none' : 'block';
+  });
+
+  // Close dropdown when clicking outside
+  document.addEventListener('click', function() {
+    dropdownMenu.style.display = 'none';
+  });
+</script>
+
+
+
+</body>
+</html>

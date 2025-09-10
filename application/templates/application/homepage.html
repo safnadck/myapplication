@@ -1,0 +1,179 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Home Page</title>
+  <link rel="stylesheet" href="{% static 'css/homepage.css' %}">
+  <script src="https://code.iconify.design/3/3.1.0/iconify.min.js"></script>
+  </style>
+</head>
+<body>
+
+  <!-- Navbar -->
+  <header class="navbar">
+    <div class="navbar-left">
+      <img src="{% static 'images/tutorlogo.png' %}" alt="Tutor Logo" class="brand-logo">
+    </div>
+
+    <div class="user-panel">
+  <span class="iconify profile" data-icon="iconamoon:profile-fill"></span>
+  <span class="user-name">{{ user.username }}</span>
+
+
+  <div class="dropdown-menu">
+    <a href="{% url 'logout' %}" class="logout-link">Logout</a>
+  </div>
+ 
+    
+  </header>
+
+  <!-- Sidebar -->
+  <aside class="sidebar-menu">
+    <div class="menu-wrapper">
+      <div class="menu-item">
+        <a href="{% url 'application:franchise_list' %}" class="menu-link">
+          <span class="iconify menu-icon" data-icon="fa-solid:school"></span>
+          <span class="menu-text">Franchise</span>
+        </a>
+      </div>
+      <div class="menu-item">
+        <a href="" class="menu-link">
+          <span class="iconify menu-icon" data-icon="ic:sharp-library-books"></span>
+          <span class="menu-text">Courses</span>
+        </a>
+      </div>
+      <div class="menu-item">
+        <a href="{% url 'application:homepage' %}" class="menu-link">
+          <span class="iconify menu-icon" data-icon="iconoir:reports-solid"></span>
+          <span class="menu-text">Reports</span>
+        </a>
+      </div>
+      <div class="menu-item">
+        <a href="#" class="menu-link">
+          <span class="iconify menu-icon" data-icon="mdi:cog"></span>
+          <span class="menu-text">Settings</span>
+        </a>
+      </div>
+    </div>
+  </aside>
+
+  <!-- Main Content -->
+  <main class="page-content">
+     <div class="register-wrapper">
+  <!-- <a href="{% url 'application:franchise_register' %}" class="register-button">Add Franchise</a> -->
+</div>
+       <div class="content">
+            <p>Welcome to the Franchise Management System. Here you can manage franchises, students, and courses.</p>
+<div class="stats">
+    <div class="stat-box">
+        <i class="fas fa-user-graduate"></i>
+        <h2>{{ total_students }}</h2>
+        <p>Total Students</p>
+    </div>
+    <a href="{% url 'application:franchise_list' %}" class="stat-box-link">
+        <div class="stat-box">
+            <i class="fas fa-store"></i>
+            <h2>{{ total_franchises }}</h2>
+            <p>Total Franchises</p>
+        </div>
+    </a>
+
+    <a href="" class="stat-box-link" style="margin-left: 90%;">
+    <div class="stat-box">
+        <i class="fas fa-book"></i>
+        <h2>{{ total_courses }}</h2>
+        <p>Total Courses</p>
+    </div>
+     </a>
+</div>
+
+
+     <div class="chart-container">
+    <canvas id="statsChart"></canvas>
+</div>
+
+    <!-- <div class="table-wrapper">
+      <table class="data-table">
+        <thead>
+          <tr>
+            <th>Name</th>
+            <th>Location</th>
+            <th>Person Responsible</th>
+            <th>Contact</th>
+            <th>Email ID</th>
+            <th>Reg Date</th>
+          </tr>
+        </thead>
+        <tbody>
+                    {% for franchise in franchises %}
+                        <tr>
+                            <td>{{ franchise.name }}</td>
+                            <td>{{ franchise.address }}</td>
+                            <td>{{ franchise.person_responsible }}</td>
+                            <td>{{ franchise.contact_no }}</td>
+                            <td>{{ franchise.email }}</td>
+                            <td>{{ franchise.registration_date }}</td>
+                        </tr>
+                    {% empty %}
+                        <tr>
+                            <td colspan="6">No franchises registered yet.</td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+      </table>
+    </div> -->
+  </main>
+
+
+
+
+
+
+
+
+  <!-- <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script>
+    const ctx = document.getElementById('statsChart').getContext('2d');
+    const statsChart = new Chart(ctx, {
+        type: 'bar',
+        data: {
+            labels: ['Students', 'Franchises'],
+            datasets: [{
+                label: 'Count',
+                data: [
+                    Number('{{ total_students }}'),
+                    Number('{{ total_franchises }}')
+                ],
+                backgroundColor: ['#3498db', '#e67e22'],
+                borderWidth: 1
+            }]
+        },
+        options: {
+            responsive: true,
+            scales: {
+                y: { beginAtZero: true }
+            }
+        }
+    });
+</script> -->
+
+<script>
+  const userPanel = document.querySelector('.user-panel');
+  const dropdownMenu = document.querySelector('.dropdown-menu');
+
+  // Toggle dropdown on click
+  userPanel.addEventListener('click', function(event) {
+    event.stopPropagation(); // prevent click from bubbling
+    dropdownMenu.style.display = dropdownMenu.style.display === 'block' ? 'none' : 'block';
+  });
+
+  // Close dropdown when clicking outside
+  document.addEventListener('click', function() {
+    dropdownMenu.style.display = 'none';
+  });
+</script>
+
+</body>
+</html>

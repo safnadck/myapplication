@@ -1,0 +1,33 @@
+
+<h2>Fee Details for {{ user.username }} in Batch {{ batch.batch_no }}</h2>
+<p>Remaining Amount: {{ student_fee_management.remaining_amount }}</p>
+<h3>Installments</h3>
+<table>
+  <thead>
+    <tr>
+      <th>Due Date</th>
+      <th>Amount</th>
+      <th>Status</th>
+      <th>Payment Date</th>
+      <th>Actions</th>
+    </tr>
+  </thead>
+  <tbody>
+    {% for installment in installments %}
+    <tr>
+      <td>{{ installment.due_date }}</td>
+      <td>{{ installment.amount }}</td>
+      <td>{{ installment.status }}</td>
+      <td>{{ installment.payment_date|default:"-" }}</td>
+      <td>
+        {% if installment.status == 'pending' %}
+        <a href="{% url 'application:mark_payment_received' franchise.pk batch.pk user.pk installment.pk %}">Mark Paid</a>
+        {% endif %}
+      </td>
+    </tr>
+    {% endfor %}
+  </tbody>
+</table>
+<a href="{% url 'application:edit_installment_setup' franchise.pk batch.pk user.pk %}">Edit Installment Setup</a>
+<a href="{% url 'application:batch_students' franchise.pk batch.pk %}">Back to Batch Students</a>
+

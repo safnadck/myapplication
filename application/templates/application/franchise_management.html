@@ -1,0 +1,141 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Home Page</title>
+  <link rel="stylesheet" href="{% static 'css/franchise_management.css' %}">
+  <script src="https://code.iconify.design/3/3.1.0/iconify.min.js"></script>
+  </style>
+</head>
+
+<body>
+
+
+  <header class="navbar">
+    <a href="{% url 'application:homepage' %}" class="navbar-left">
+      <img src="{% static 'images/tutorlogo.png' %}" alt="Tutor Logo" class="brand-logo">
+    </a>
+
+    <div class="user-panel">
+      <span class="iconify profile" data-icon="iconamoon:profile-fill"></span>
+      <span class="user-name">{{ user.username }}</span>
+
+
+      <div class="dropdown-menu">
+        <a href="{% url 'logout' %}" class="logout-link">Logout</a>
+      </div>
+    </div>
+
+
+  </header>
+
+  <aside class="sidebar-menu">
+    <div class="menu-wrapper">
+      <div class="menu-item">
+        <a href="{% url 'application:franchise_list' %}" class="menu-link">
+          <span class="iconify menu-icon" data-icon="fa-solid:school"></span>
+          <span class="menu-text">Franchise</span>
+        </a>
+      </div>
+      <div class="menu-item">
+      
+      </div>
+      <div class="menu-item">
+        <a href="{% url 'application:homepage' %}" class="menu-link">
+          <span class="iconify menu-icon" data-icon="iconoir:reports-solid"></span>
+          <span class="menu-text">Reports</span>
+        </a>
+      </div>
+      <div class="menu-item">
+        <a href="#" class="menu-link">
+          <span class="iconify menu-icon" data-icon="mdi:cog"></span>
+          <span class="menu-text">Settings</span>
+        </a>
+      </div>
+    </div>
+  </aside>
+
+
+  <main class="page-content">
+    <div class="register-wrapper">
+     <div class="left-buttons">
+                <a href="{% url 'application:homepage' %}" class="backbutton">
+                    <span class="iconify" data-icon="weui:back-filled" style="font-size: 20px;"></span>
+                </a>
+            </div>
+
+      <div class="right-buttons">
+        <a href="{% url 'application:franchise_register' %}" class="register-button">
+          <span class="iconify plus-icon" data-icon="vaadin:plus"></span>
+          Add Franchise
+        </a>
+      </div>
+    </div>
+
+
+    <div class="table-wrapper">
+      <table class="data-table">
+        <thead>
+          <tr>
+            <th>Name</th>
+            <th>Location</th>
+            <th>coordinator</th>
+            <th>Contact</th>
+            <th>Email ID</th>
+            <th>Reg Date</th>
+            <th>Actions</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for franchise in franchises %}
+          <tr onclick="window.location='{% url 'application:franchise_report' franchise.pk %}'"
+            style="cursor: pointer;">
+            <td>{{ franchise.name }}</td>
+            <td>{{ franchise.location }}</td>
+            <td>{{ franchise.coordinator }}</td>
+            <td>{{ franchise.contact_no }}</td>
+            <td>{{ franchise.email }}</td>
+            <td>{{ franchise.registration_date|date:"d/m/Y" }}</td>
+            <td>
+              <a href="{% url 'application:franchise_report' franchise.pk %}" class="edit-btn" onclick="event.stopPropagation();">
+                <span class="iconify" data-icon="ooui:eye" style="font-size: 16px;"></span>
+              </a>
+
+              <a href="{% url 'application:franchise_edit' franchise.pk %}" class="edit-btn"
+                onclick="event.stopPropagation();">
+                <span class="iconify" data-icon="mdi:pencil" style="font-size: 16px;"></span>
+              </a>
+            </td>
+          </tr>
+          {% empty %}
+          <tr>
+            <td colspan="7">No franchises registered yet.</td>
+          </tr>
+          {% endfor %}
+        </tbody>
+
+      </table>
+    </div>
+  </main>
+  <script>
+  const userPanel = document.querySelector('.user-panel');
+  const dropdownMenu = document.querySelector('.dropdown-menu');
+
+  // Toggle dropdown on click
+  userPanel.addEventListener('click', function(event) {
+    event.stopPropagation(); // prevent click from bubbling
+    dropdownMenu.style.display = dropdownMenu.style.display === 'block' ? 'none' : 'block';
+  });
+
+  // Close dropdown when clicking outside
+  document.addEventListener('click', function() {
+    dropdownMenu.style.display = 'none';
+  });
+</script>
+
+</body>
+
+</html>

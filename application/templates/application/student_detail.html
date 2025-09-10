@@ -1,0 +1,329 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Student Details - {{ user.get_full_name|default:user.username }}</title>
+  <link rel="stylesheet" href="{% static 'css/batch_students.css' %}">
+  <script src="https://code.iconify.design/3/3.1.0/iconify.min.js"></script>
+</head>
+<body>
+
+  <header class="navbar">
+    <a href="{% url 'application:homepage' %}" class="navbar-left">
+      <img src="{% static 'images/tutorlogo.png' %}" alt="Tutor Logo" class="brand-logo">
+    </a>
+
+   <div class="user-panel">
+  <span class="iconify profile" data-icon="iconamoon:profile-fill"></span>
+  <span class="user-name">{{ user.username }}</span>
+
+  <div class="dropdown-menu">
+    <a href="{% url 'logout' %}" class="logout-link">Logout</a>
+  </div>
+</div>
+  </header>
+
+  <aside class="sidebar-menu">
+    <div class="menu-wrapper">
+      <div class="menu-item">
+        <a href="{% url 'application:franchise_list' %}" class="menu-link">
+          <span class="iconify menu-icon" data-icon="fa-solid:school"></span>
+          <span class="menu-text">Franchise</span>
+        </a>
+      </div>
+      <div class="menu-item">
+        <a href="" class="menu-link">
+          <span class="iconify menu-icon" data-icon="ic:sharp-library-books"></span>
+          <span class="menu-text">Courses</span>
+        </a>
+      </div>
+      <div class="menu-item">
+        <a href="{% url 'application:homepage' %}" class="menu-link">
+          <span class="iconify menu-icon" data-icon="iconoir:reports-solid"></span>
+          <span class="menu-text">Reports</span>
+        </a>
+      </div>
+      <div class="menu-item">
+        <a href="#" class="menu-link">
+          <span class="iconify menu-icon" data-icon="mdi:cog"></span>
+          <span class="menu-text">Settings</span>
+        </a>
+      </div>
+    </div>
+  </aside>
+
+  <main class="page-content">
+    <div class="register-wrapper">
+      <div class="left-buttons">
+        <a href="{% url 'application:batch_students' franchise.id batch.id %}" class="backbutton">
+          <span class="iconify" data-icon="weui:back-filled" style="font-size: 20px;"></span>
+        </a>
+      </div>
+
+      <div class="right-buttons">
+        <a href="{% url 'application:student_fee_management' franchise.id batch.id user.id %}" class="viewstudent">
+          Fee Management
+        </a>
+        <a href="{% url 'application:edit_student_details' franchise.id batch.id user.id %}" class="register-button" style="background-color: #007bff; margin-left: 10px;">
+          Edit Student Details
+        </a>
+        <form method="post" style="display: inline;">
+          {% csrf_token %}
+          {% if is_enrolled %}
+            <button type="submit" name="action" value="unenroll" class="register-button" style="background-color: #dc3545;">
+              <span class="iconify plus-icon" data-icon="vaadin:minus"></span>
+              Unenroll
+            </button>
+          {% else %}
+            <button type="submit" name="action" value="enroll" class="register-button">
+              <span class="iconify plus-icon" data-icon="vaadin:plus"></span>
+              Enroll
+            </button>
+          {% endif %}
+        </form>
+      </div>
+    </div>
+
+    <!-- Student Information Section -->
+    <div class="student-info-section">
+      <h2>Student Details</h2>
+      <div class="info-grid">
+        <div class="info-item">
+          <label>Full Name:</label>
+          <span>{{ user.get_full_name|default:"Not provided" }}</span>
+        </div>
+        <div class="info-item">
+          <label>Username:</label>
+          <span>{{ user.username }}</span>
+        </div>
+        <div class="info-item">
+          <label>Email:</label>
+          <span>{{ user.email }}</span>
+        </div>
+         <div class="info-item">
+          <label>Address:</label>
+          <span>{{ user.profile.mailing_address|default:"Not provided"  }}</span>
+        </div>
+        <div class="info-item">
+          <label>Phone Number:</label>
+          <span>{{ user.profile.phone_number|default:"Not provided" }}</span>
+        </div>
+        <div class="info-item">
+          <label>Date Joined:</label>
+          <span>{{ user.date_joined|date:"M d, Y" }}</span>
+        </div>
+        <div class="info-item">
+          <label>Enrollment Status:</label>
+          <span class="{% if is_enrolled %}enrolled{% else %}not-enrolled{% endif %}">
+            {% if is_enrolled %}Enrolled{% else %}Not Enrolled{% endif %}
+          </span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Franchise and Batch Information -->
+    <div class="franchise-batch-section">
+      <h2>Franchise & Batch Information</h2>
+      <div class="info-grid">
+        <div class="info-item">
+          <label>Franchise:</label>
+          <span>{{ franchise.name }}</span>
+        </div>
+        <div class="info-item">
+          <label>Batch:</label>
+          <span>{{ batch.batch_no }} - {{ batch.course.display_name }}</span>
+        </div>
+        <div class="info-item">
+          <label>Batch Fees:</label>
+          <span>${{ batch.fees }}</span>
+        </div>
+        <div class="info-item">
+          <label>Discount:</label>
+          <span>${{ fee_management.discount }}</span>
+        </div>
+        <div class="info-item">
+          <label>Remaining Amount:</label>
+          <span>${{ student_fee.remaining_amount }}</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Fee Management Section -->
+    <div class="fee-management-section">
+      <h2>Fee Management</h2>
+      <div class="fee-summary">
+        <p><strong>Total Fee:</strong> ${{ batch.fees }}</p>
+        <p><strong>Discount:</strong> ${{ fee_management.discount }}</p>
+        <p><strong>Remaining Amount:</strong> ${{ student_fee.remaining_amount }}</p>
+      </div>
+
+      <h3>Installments</h3>
+      <table class="fee-table">
+        <thead>
+          <tr>
+            <th>Due Date</th>
+            <th>Amount</th>
+            <th>Repayment Days</th>
+            <th>Status</th>
+            <th>Payment Date</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for item in installments %}
+          {% with installment=item.installment %}
+          <tr>
+            <td>{{ installment.due_date|date:'Y-m-d' }}</td>
+            <td>${{ installment.amount }}</td>
+            <td>{{ installment.repayment_period_days }}</td>
+            <td>
+              <span class="status-{{ installment.status }}">
+                {{ installment.get_status_display }}
+              </span>
+            </td>
+            <td>{{ installment.payment_date|default:"-" }}</td>
+          </tr>
+          {% endwith %}
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+  </main>
+
+<style>
+.student-info-section, .franchise-batch-section, .fee-management-section {
+  background: white;
+  padding: 20px;
+  margin-bottom: 20px;
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+
+.student-info-section h2, .franchise-batch-section h2, .fee-management-section h2 {
+  color: #333;
+  margin-bottom: 20px;
+  border-bottom: 2px solid #007bff;
+  padding-bottom: 10px;
+}
+
+.info-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: 15px;
+}
+
+.info-item {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+}
+
+.info-item label {
+  font-weight: bold;
+  color: #555;
+  font-size: 14px;
+}
+
+.info-item span {
+  font-size: 16px;
+  color: #333;
+  padding: 8px;
+  background: #f8f9fa;
+  border-radius: 4px;
+}
+
+.enrolled {
+  color: #28a745;
+  font-weight: bold;
+}
+
+.not-enrolled {
+  color: #dc3545;
+  font-weight: bold;
+}
+
+.fee-summary {
+  background: #f8f9fa;
+  padding: 15px;
+  border-radius: 6px;
+  margin-bottom: 20px;
+}
+
+.fee-summary p {
+  margin: 5px 0;
+  font-size: 16px;
+}
+
+.fee-table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 15px;
+}
+
+.fee-table th, .fee-table td {
+  border: 1px solid #ddd;
+  padding: 12px;
+  text-align: left;
+}
+
+.fee-table th {
+  background-color: #007bff;
+  color: white;
+  font-weight: bold;
+}
+
+.fee-table tr:nth-child(even) {
+  background-color: #f8f9fa;
+}
+
+.status-pending {
+  color: #ffc107;
+  font-weight: bold;
+}
+
+.status-paid {
+  color: #28a745;
+  font-weight: bold;
+}
+
+.status-overdue {
+  color: #dc3545;
+  font-weight: bold;
+}
+
+.register-button {
+  background-color: #28a745;
+  color: white;
+  border: none;
+  padding: 10px 15px;
+  border-radius: 3px;
+  cursor: pointer;
+  text-decoration: none;
+  display: inline-block;
+  margin-left: 10px;
+}
+
+.register-button:hover {
+  background-color: #218838;
+}
+</style>
+
+<script>
+  const userPanel = document.querySelector('.user-panel');
+  const dropdownMenu = document.querySelector('.dropdown-menu');
+
+  // Toggle dropdown on click
+  userPanel.addEventListener('click', function(event) {
+    event.stopPropagation(); // prevent click from bubbling
+    dropdownMenu.style.display = dropdownMenu.style.display === 'block' ? 'none' : 'block';
+  });
+
+  // Close dropdown when clicking outside
+  document.addEventListener('click', function() {
+    dropdownMenu.style.display = 'none';
+  });
+</script>
+
+</body>
+</html>

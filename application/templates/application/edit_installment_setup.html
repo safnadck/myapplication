@@ -1,0 +1,40 @@
+
+<h2>Edit Installment Setup for {{ user.username }}</h2>
+<form method="post" id="installment-form">
+  {% csrf_token %}
+  {{ formset.management_form }}
+  {% if formset.non_form_errors %}
+    <div class="errors">
+      {% for error in formset.non_form_errors %}
+        <p>{{ error }}</p>
+      {% endfor %}
+    </div>
+  {% endif %}
+  <table class="installment-table">
+    <thead>
+      <tr>
+        <th>Due Date</th>
+        <th>Amount</th>
+        <th>Repayment Days</th>
+        <th>Status</th>
+        <th>Delete</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for form in formset %}
+        <tr class="installment-row">
+          <td>{{ form.instance.due_date }}</td>
+          <td>{{ form.amount }}</td>
+          <td>{{ form.repayment_period_days }}</td>
+          <td>{{ form.instance.status }}</td>
+          <td>{{ form.DELETE }}</td>
+        </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+  <button type="submit">Save Changes</button>
+</form>
+<a href="{% url 'application:student_fee_management' franchise.pk batch.pk user.pk %}">Back to Fee Management</a>
+
+
+

@@ -1,0 +1,238 @@
+{% load static %}
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Register Student for {{ course.display_name }} - {{ franchise.name }}</title>
+    <link rel="stylesheet" href="{% static 'css/batch_fee_management.css' %}">
+    <script src="https://code.iconify.design/3/3.1.0/iconify.min.js"></script>
+</head>
+<body>
+
+<header class="navbar">
+    <a href="{% url 'application:homepage' %}" class="navbar-left">
+        <img src="{% static 'images/tutorlogo.png' %}" alt="Tutor Logo" class="brand-logo">
+    </a>
+
+    <div class="user-panel">
+        <span class="iconify profile" data-icon="iconamoon:profile-fill"></span>
+        <span class="user-name">{{ user.username }}</span>
+
+        <div class="dropdown-menu">
+            <a href="{% url 'logout' %}" class="logout-link">Logout</a>
+        </div>
+    </div>
+</header>
+
+<aside class="sidebar-menu">
+    <div class="menu-wrapper">
+
+        <div class="menu-item">
+            <a href="{% url 'application:franchise_list' %}" class="menu-link">
+                <span class="iconify menu-icon" data-icon="fa-solid:school"></span>
+                <span class="menu-text">Franchise</span>
+            </a>
+        </div>
+        <div class="menu-item">
+        <a href="" class="menu-link">
+          <span class="iconify menu-icon" data-icon="ic:sharp-library-books"></span>
+          <span class="menu-text">Courses</span>
+        </a>
+      </div>
+        <div class="menu-item">
+            <a href="{% url 'application:homepage' %}" class="menu-link">
+                <span class="iconify menu-icon" data-icon="iconoir:reports-solid"></span>
+                <span class="menu-text">Reports</span>
+            </a>
+        </div>
+        <div class="menu-item">
+            <a href="#" class="menu-link">
+                <span class="iconify menu-icon" data-icon="mdi:cog"></span>
+                <span class="menu-text">Settings</span>
+            </a>
+        </div>
+    </div>
+</aside>
+
+<main class="page-content">
+     <div class="register-wrapper">
+      <div class="left-buttons">
+        <a href="{% url 'application:batch_students' franchise.id batch.id %}" class="backbutton">
+          <span class="iconify" data-icon="weui:back-filled" style="font-size: 20px;"></span>
+        </a>
+      </div>
+    </div>
+    <div class="form-card">
+       <h2 style="color: #16376D; padding-top: 25px; font-size: 30px;">Batch Fee Management for {{ batch.batch_no }}</h2>
+       <div class="fee-summary">
+  <p>Total Fees:  ₹{{ batch.fees }}</p>
+  <span class="divider"></span>
+  <p>Discount:  ₹{{ fee_management.discount }}</p>
+  <span class="divider"></span>
+  <p>Remaining Amount:  ₹{{ fee_management.remaining_amount }}</p>
+</div>
+<!-- DISCOUNT FORM -->
+<form method="post" class="discount-form">
+  {% csrf_token %}
+  <label for="id_discount">Discount Amount:</label>
+  {{ form.discount }}
+  <button type="submit" name="action" value="save_discount">Done</button>
+</form>
+
+
+<!-- INSTALLMENTS FORM -->
+<form method="post" class="installments-form" id="fee-management-form">
+  {% csrf_token %}
+  <h3>Installments</h3>
+
+  <div id="installments-container">
+  {% for inst in installments %}
+    <div class="installment-item">
+      <div class="form-group">
+        <label>Amount:</label>
+        <input type="number" step="0.01" 
+               name="installment_amount_{{ forloop.counter }}" 
+               value="{{ inst.amount }}">
+      </div>
+      <div class="form-group">
+        <label>Repayment Period (days):</label>
+        <input type="number" 
+               name="repayment_period_{{ forloop.counter }}" 
+               value="{{ inst.repayment_period_days }}">
+      </div>
+      <button type="button" class="remove-installment-btn">Remove</button>
+    </div>
+  {% endfor %}
+</div>
+
+
+  <!-- Totals + Balance -->
+
+
+  <div style="margin-top:1rem; display:flex; gap:10px;">
+    <button type="button" id="add-installment-btn">Add</button>
+    <button type="submit" name="action" value="save_installments">Done</button>
+  </div>
+
+    <div style="margin: 1rem 0; color:#16376D; font-weight:600;">
+      <p>Total Installments: ₹<span id="total-installment-amount">0.00</span></p>
+      <p>Balance Remaining: ₹<span id="balance-amount">{{ fee_management.remaining_amount }}</span></p>
+  </div>
+</form>
+
+
+
+    
+</main>
+<script>
+  const userPanel = document.querySelector('.user-panel');
+  const dropdownMenu = document.querySelector('.dropdown-menu');
+
+  // Toggle dropdown on click
+  userPanel.addEventListener('click', function(event) {
+    event.stopPropagation(); // prevent click from bubbling
+    dropdownMenu.style.display = dropdownMenu.style.display === 'block' ? 'none' : 'block';
+  });
+
+  // Close dropdown when clicking outside
+  document.addEventListener('click', function() {
+    dropdownMenu.style.display = 'none';
+  });
+document.addEventListener('DOMContentLoaded', function() {
+    let installmentCount = parseInt('{{ installments|length }}') || 0;
+    const container = document.getElementById('installments-container');
+    const addBtn = document.getElementById('add-installment-btn');
+    const totalAmountSpan = document.getElementById('total-installment-amount');
+    const remainingAmount = parseFloat('{{ fee_management.remaining_amount }}');
+
+    // Add event listeners to existing amount inputs
+    const amountInputs = container.querySelectorAll('input[name^="installment_amount_"]');
+    amountInputs.forEach(input => {
+        input.addEventListener('input', updateTotalAmount);
+    });
+
+    // Add event listeners to existing remove buttons
+    const removeBtns = container.querySelectorAll('.remove-installment-btn');
+    removeBtns.forEach(btn => {
+        btn.addEventListener('click', function() {
+            container.removeChild(btn.parentElement);
+            updateTotalAmount();
+        });
+    });
+
+    addBtn.addEventListener('click', function() {
+        addInstallmentField();
+    });
+
+    // Initialize total and balance
+    updateTotalAmount();
+
+    function addInstallmentField(amount = '', period = '') {
+        installmentCount++;
+        const div = document.createElement('div');
+        div.className = 'installment-item';
+        div.innerHTML = `
+            <div class="form-group">
+                <label for="installment_amount_${installmentCount}">Amount:</label>
+                <input type="number" step="0.01" name="installment_amount_${installmentCount}" id="installment_amount_${installmentCount}" value="${amount}" required>
+            </div>
+            <div class="form-group">
+                <label for="repayment_period_${installmentCount}">Repayment Period (days):</label>
+                <input type="number" name="repayment_period_${installmentCount}" id="repayment_period_${installmentCount}" value="${period}" required>
+            </div>
+            <button type="button" class="remove-installment-btn">Remove</button>
+        `;
+        container.appendChild(div);
+
+        // Add event listener to remove button
+        div.querySelector('.remove-installment-btn').addEventListener('click', function() {
+            container.removeChild(div);
+            updateTotalAmount();
+        });
+
+        // Add event listeners to amount inputs
+        div.querySelector(`#installment_amount_${installmentCount}`).addEventListener('input', updateTotalAmount);
+
+        updateTotalAmount();
+    }
+
+    function updateTotalAmount() {
+        let total = 0;
+        const amountInputs = container.querySelectorAll('input[name^="installment_amount_"]');
+        amountInputs.forEach(input => {
+            total += parseFloat(input.value) || 0;
+        });
+        totalAmountSpan.textContent = total.toFixed(2);
+
+        // Update balance amount
+        const balanceAmountSpan = document.getElementById('balance-amount');
+        const balance = remainingAmount - total;
+        balanceAmountSpan.textContent = balance.toFixed(2);
+        if (balance < 0) {
+            balanceAmountSpan.style.color = 'red';
+        } else {
+            balanceAmountSpan.style.color = 'black';
+        }
+
+        // Check if total exceeds remaining amount
+        if (total > remainingAmount) {
+            totalAmountSpan.style.color = 'red';
+            addBtn.disabled = true;
+        } else {
+            totalAmountSpan.style.color = 'black';
+            addBtn.disabled = false;
+        }
+    }
+
+    // Form validation before submit
+    document.getElementById('fee-management-form').addEventListener('submit', function(e) {
+        const totalInstallment = parseFloat(totalAmountSpan.textContent);
+        if (totalInstallment > remainingAmount) {
+            e.preventDefault();
+            alert('Total installment amount cannot exceed remaining amount.');
+        }
+    });
+});
+</script>
+
+</body>
+</html>

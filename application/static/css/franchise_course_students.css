@@ -1,0 +1,379 @@
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  font-family: 'Poppins', sans-serif;
+  background-color: #ffffff;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+/* Navbar */
+.navbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 1rem;
+  background-color: white;
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 1000;
+  height: 70px;
+}
+
+.navbar-left {
+  display: flex;
+  align-items: center;
+}
+
+.brand-logo {
+  margin-top: 2%;
+  width: 150px;
+  height: auto;
+  max-height: 40px;
+  margin-left: 20px;
+}
+
+.user-panel {
+  position: relative; /* Needed for absolute dropdown */
+  margin-top: 2%;
+  display: flex;
+  align-items: center;
+  background-color: rgba(22, 55, 109, 0.1);
+  padding: 10px 16px;
+  border-radius: 14px;
+  color: #16376D;
+  gap: 8px;
+  font-size: 14px;
+  margin-right: 20px;
+  cursor: pointer; /* shows pointer on hover */
+}
+
+.dropdown-menu {
+  display: none;
+  position: absolute;
+  top: 100%; /* right below user panel */
+  right: 0;
+  background-color: white;
+  border-radius: 10px;
+  box-shadow: 0px 4px 10px rgba(0,0,0,0.15);
+  min-width: 120px;
+  z-index: 1000;
+}
+
+.dropdown-menu a {
+  display: block;
+  padding: 10px 15px;
+  text-decoration: none;
+  color: #16376D;
+  font-weight: 600;
+  border-radius: 10px;
+  transition: background 0.2s ease;
+}
+
+
+
+
+.user-name {
+  
+ font-size: 15px;
+  text-transform: capitalize;
+  font-weight: 700;
+ 
+}
+
+.profile {
+  font-size: 25px;
+}
+
+/* Sidebar */
+.sidebar-menu {
+  position: fixed;
+  top: 127px;
+  left: 20px;
+  width: 80px; 
+  height: calc(100vh - 70px);
+  background-color: white;
+  transition: width 0.3s ease;
+  overflow: hidden;
+}
+
+.sidebar-menu:hover {
+  width: 250px;
+}
+
+.menu-wrapper {
+  padding: 1rem;
+}
+
+.menu-item {
+  background-color: rgba(22, 55, 109, 0.09);
+  border-radius: 14px;
+  margin-bottom: 0.75rem;
+  transition: background-color 0.3s ease;
+}
+
+.menu-item:hover {
+  background-color: rgba(254, 255, 115, 0.57);
+}
+
+.register-wrapper {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 20px;
+  gap: 15px;
+}
+
+.right-buttons {
+  display: flex;
+  gap: 15px;
+}
+
+.left-buttons {
+  display: flex;
+  justify-content: flex-start;
+  margin-right: auto;
+}
+
+.backbutton {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  background-color: #fff;
+  border: 1px solid #16376D;
+  color: #16376D;
+  padding: 10px 20px;
+  border-radius: 14px;
+  text-decoration: none;
+  font-size: 15px;
+  font-weight: 600;
+  transition: background-color 0.3s ease;
+}
+
+.register-button {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  background: linear-gradient(120deg, #16376D 50%, rgba(255, 254, 39, 1) 50%);
+  background-size: 200% 200%;
+  background-position: top left; 
+  color: #fff;
+  padding: 10px 20px;
+  border-radius: 14px;
+  text-decoration: none;
+  font-size: 15px;
+  transition: background-position 0.5s ease, color 0.3s ease;
+}
+
+.register-button:hover {
+  background-position: bottom right; 
+  color: #16376D;
+}
+
+
+
+.plus-icon {
+  font-size: 24px;  
+  font-weight: 700;  
+  line-height: 1;   
+}
+
+
+.menu-link {
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  padding: 0.6rem 1rem;
+  text-decoration: none;
+  color: #16376D;
+  gap: 12px;
+  white-space: nowrap;
+  transition: padding 0.3s ease;
+}
+
+.sidebar-menu:not(:hover) .menu-link {
+  padding: 0.6rem 0.6rem;
+}
+
+.menu-icon {
+  color: #16376D;
+  width: 28px;
+  height: 28px;
+  flex-shrink: 0;
+  font-size: 28px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.menu-text {
+  font-weight: 500;
+  opacity: 0;
+  transition: opacity 0.3s ease;
+}
+
+.sidebar-menu:hover .menu-text {
+  opacity: 1;
+}
+
+/* Main content */
+.page-content {
+  margin-left: 80px;
+  margin-top: 50px;
+  padding: 2rem;
+  min-height: calc(100vh - 70px);
+  transition: margin-left 0.3s ease;
+}
+
+.sidebar-menu:hover ~ .page-content {
+  margin-left: 250px;
+}
+
+/* Table */
+.table-wrapper {
+    margin-top: 10%;
+  background-color: white;
+  border-radius: 14px;
+  overflow-x: auto;
+  margin: 0 auto;
+}
+
+.data-table {
+  text-align: left;
+  width: 100%;
+  border-collapse: collapse;
+  min-width: 600px;
+}
+
+.data-table thead {
+  background-color: #16376D;
+  color: white;
+}
+
+.data-table thead th {
+  padding: 13px;
+  text-align: left;
+  font-size: 15px;
+  font-weight: 600;
+  white-space: nowrap;
+}
+
+.data-table tbody td {
+ padding: 9px;
+  border-bottom: 1px solid #e0e0e0;
+  font-size: 14px;
+  font-weight: 400;
+
+}
+
+.data-table tbody tr {
+  background-color:rgba(22, 55, 109, 0.08);
+  border-bottom: 2px solid white;
+}
+
+.data-table thead th,
+.data-table tbody td {
+  padding: 12px 20px; /* 12px top/bottom, 20px left/right */
+  text-align: left;   /* or center if needed */
+}
+
+/* Make first and last columns have equal padding */
+.data-table th:first-child,
+.data-table td:first-child,
+.data-table th:last-child,
+.data-table td:last-child {
+  padding-left: 50px;  /* same as other cells */
+  padding-right: 0px; /* same as other cells */
+}
+
+
+
+
+.data-table tbody tr:hover {
+  background-color: rgba(254, 255, 115, 0.57);
+}
+
+.data-table tbody tr:last-child td {
+  border-bottom: none;
+}
+
+.edit-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  color:#16376D;
+  padding: 6px 6px;
+  border-radius: 8px;
+  border: 2px solid rgba(22, 55, 109, 0.8);
+}
+
+.edit-btn:hover {
+  background-color: #16376D;
+  color: white;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.edit-btn .iconify {
+  font-size: 14px;
+}
+
+.manage-courses-btn {
+  color: #000000;
+  border: 1px solid #16376D;
+  padding: 6px 10px;
+  border-radius: 8px;
+  text-decoration: none;
+  font-size: 13px;
+  font-weight: 600;
+  transition: background-color 0.3s ease;
+
+}
+
+
+
+/* Responsive */
+@media screen and (max-width: 768px) {
+  .page-content {
+    margin-left: 80px;
+    padding: 1rem;
+  }
+
+  .data-table {
+    font-size: 14px;
+  }
+
+  .data-table thead th,
+  .data-table tbody td {
+    padding: 0.75rem;
+  }
+  
+  .edit-btn {
+    font-size: 12px;
+    padding: 4px 8px;
+  }
+}
+
+/* Edit Student Button */
+.btn-edit {
+    display: inline-block;
+    background-color: #007bff; /* Bootstrap primary color */
+    color: white;
+    padding: 10px 20px;
+    border-radius: 6px;
+    text-decoration: none;
+    font-size: 14px;
+    transition: background-color 0.3s ease;
+    margin-bottom: 15px;
+}
+
+.btn-edit:hover {
+    background-color: #0056b3; /* Darker shade for hover effect */
+}
+

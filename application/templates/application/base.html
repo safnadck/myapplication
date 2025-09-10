@@ -1,0 +1,62 @@
+{% load static %}
+<!DOCTYPE html>
+<html>
+<head>
+  <title>All Students - {{ franchise.name }}</title>
+  <link rel="stylesheet" href="{% static 'css/franchise_report.css' %}">
+  <style>
+    table { border-collapse: collapse; width: 100%; }
+    th, td { border: 1px solid #ddd; padding: 8px; }
+    th { background: #f4f4f4; text-align: left; }
+    td ul { margin: 0; padding-left: 18px; }
+  </style>
+</head>
+<body>
+  <h1>All Students under {{ franchise.name }}</h1>
+
+  {% if users %}
+    <table>
+      <thead>
+        <tr>
+          <th>Name</th>
+          <th>Email</th>
+          <th>Phone Number</th>
+          <th>Enrolled Courses</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for user in users %}
+          <tr>
+            <td>{{ user.get_full_name|default:user.username }}</td>
+            <td>{{ user.email }}</td>
+            <td>
+              {% if user.profile.phone_number %}
+                {{ user.profile.phone_number }}
+              {% else %}
+                <em>N/A</em>
+              {% endif %}
+            </td>
+            <td>
+              {% if user.enrolled_courses %}
+                <ul>
+                  {% for course in user.enrolled_courses %}
+                    <li>{{ course.display_name }}</li>
+                  {% endfor %}
+                </ul>
+              {% else %}
+                <em>No courses enrolled</em>
+              {% endif %}
+            </td>
+          </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  {% else %}
+    <p>No students registered under this franchise.</p>
+  {% endif %}
+
+  <p>
+    <a href="{% url 'application:franchise_report' franchise.id %}">⬅ Back to Report</a>
+  </p>
+</body>
+</html>
