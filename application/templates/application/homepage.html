@@ -50,6 +50,7 @@
           <span class="menu-text">Reports</span>
         </a>
       </div>
+      
       <div class="menu-item">
         <a href="#" class="menu-link">
           <span class="iconify menu-icon" data-icon="mdi:cog"></span>
@@ -64,7 +65,7 @@
      <div class="register-wrapper">
   <!-- <a href="{% url 'application:franchise_register' %}" class="register-button">Add Franchise</a> -->
 </div>
-       <div class="content">
+     <div class="content">
             <p>Welcome to the Franchise Management System. Here you can manage franchises, students, and courses.</p>
 <div class="stats">
     <div class="stat-box">
@@ -80,14 +81,33 @@
         </div>
     </a>
 
-    <a href="" class="stat-box-link" style="margin-left: 90%;">
+
+     <a href="{% url 'application:inactive_users' %}" class="stat-box-link">
+        <div class="stat-box">
+            <i class="fas fa-store"></i>
+            <h2>👤</h2>
+            <p>Inactive Users</p>
+        </div>
+    </a>
+
+
+    <a href="" class="stat-box-link">
     <div class="stat-box">
         <i class="fas fa-book"></i>
         <h2>{{ total_courses }}</h2>
         <p>Total Courses</p>
     </div>
      </a>
+
+     <a href="{% url 'application:fee_reminders' %}" class="stat-box-link">
+    <div class="stat-box">
+        <i class="fas fa-book"></i>
+        <h2>₹</h2>
+        <p>Fee Payement Reminder</p>
+    </div>
+     </a>
 </div>
+
 
 
      <div class="chart-container">
