@@ -5,6 +5,7 @@ app_name = 'application'
 
 urlpatterns = [
     path('home/', views.homepage, name='homepage'),
+    path('fee-reminders/', views.fee_reminders, name='fee_reminders'),
     path('franchises/', views.franchise_list, name='franchise_list'),
     path('franchise/register/', views.franchise_register, name='franchise_register'),
     path('franchise/<int:pk>/edit/', views.franchise_edit, name='franchise_edit'),
@@ -16,5 +17,7 @@ urlpatterns = [
     path('franchise/<int:franchise_pk>/batch/<int:batch_pk>/register/', views.batch_user_register, name='batch_user_register'),
     path('franchise/<int:franchise_pk>/batch/<int:batch_pk>/fee-management/', views.batch_fee_management, name='batch_fee_management'),
     path('franchise/<int:franchise_pk>/batch/<int:batch_pk>/student-fee-management/<int:user_pk>/', views.student_fee_management, name='student_fee_management'),
+    path('franchise/<int:franchise_pk>/batch/<int:batch_pk>/student-fee-management/<int:user_pk>/print-installment-invoice/<int:installment_pk>/', views.print_installment_invoice, name='print_installment_invoice'),
     path('franchise/<int:franchise_pk>/batch/<int:batch_pk>/student-fee-management/<int:user_pk>/edit-installment/', views.edit_installment_setup, name='edit_installment_setup'),
+    path('inactive-users/', views.inactive_users, name='inactive_users'),
 ]
