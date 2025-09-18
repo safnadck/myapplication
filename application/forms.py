@@ -104,13 +104,36 @@ class StudentFeeManagementForm(forms.ModelForm):
 class InstallmentForm(forms.ModelForm):
     class Meta:
         model = Installment
-        fields = ['amount', 'due_date', 'status', 'repayment_period_days']
+        fields = ['amount', 'payed_amount', 'due_date', 'status', 'repayment_period_days']
         widgets = {
             'due_date': forms.DateInput(attrs={'type': 'date'}),
             'repayment_period_days': forms.NumberInput(attrs={'min': '0'}),
             'status': forms.Select(choices=Installment.STATUS_CHOICES),
+            'payed_amount': forms.NumberInput(attrs={'step': '0.01', 'min': '0'}),
         }
 
+
+class EditInstallmentForm(forms.ModelForm):
+    class Meta:
+        model = Installment
+        fields = ['amount', 'payed_amount', 'repayment_period_days']  # Added payed_amount field
+        widgets = {
+            'amount': forms.NumberInput(attrs={'step': '0.01', 'min': '0.01', 'required': 'required'}),
+            'payed_amount': forms.NumberInput(attrs={'step': '0.01', 'min': '0', 'required': 'required'}),
+            'repayment_period_days': forms.NumberInput(attrs={'min': '1', 'required': 'required'}),
+        }
+    
+    def clean_amount(self):
+        amount = self.cleaned_data.get('amount')
+        if amount is not None and amount <= 0:
+            raise forms.ValidationError("Amount must be greater than 0")
+        return amount
+    
+    def clean_repayment_period_days(self):
+        days = self.cleaned_data.get('repayment_period_days')
+        if days is not None and days <= 0:
+            raise forms.ValidationError("Repayment period must be at least 1 day")
+        return days
 
 class PaymentForm(forms.ModelForm):
     class Meta:
@@ -124,6 +147,7 @@ class PaymentForm(forms.ModelForm):
 class StudentEditForm(forms.ModelForm):
     phone_number = forms.CharField(max_length=20, label='Phone Number', required=False)
     mailing_address = forms.CharField(max_length=255, label='Mailing Address', required=False)
+    new_password = forms.CharField(widget=forms.PasswordInput(attrs={'id': 'new_password'}), required=False, label='New Password')
 
     class Meta:
         model = User
@@ -142,4 +166,8 @@ class StudentEditForm(forms.ModelForm):
             profile.phone_number = self.cleaned_data.get('phone_number')
             profile.mailing_address = self.cleaned_data.get('mailing_address')
             profile.save()
+            new_password = self.cleaned_data.get('new_password')
+            if new_password:
+                user.set_password(new_password)
+                user.save()
         return user
