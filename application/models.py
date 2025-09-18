@@ -73,6 +73,7 @@ class Installment(models.Model):
     student_fee_management = models.ForeignKey(StudentFeeManagement, on_delete=models.CASCADE, related_name='installments')
     due_date = models.DateField()
     amount = models.DecimalField(max_digits=10, decimal_places=2)
+    payed_amount = models.DecimalField(max_digits=10, decimal_places=2, default=0)  # New field for partial payment
     status = models.CharField(max_length=10, choices=STATUS_CHOICES, default='pending')
     payment_date = models.DateField(blank=True, null=True)
     repayment_period_days = models.PositiveIntegerField(default=0)
